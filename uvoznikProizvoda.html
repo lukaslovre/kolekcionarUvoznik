@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/homeStyle.css" />
+    <script src="scripts/homeScript.js" defer></script>
+    <title>Kolekcionar Uvoznik</title>
+  </head>
+  <body>
+    <div class="mainContainer">
+      <h1>Kolekcionar uvoznik</h1>
+
+      <!-- Main menu gumbi -->
+      <div id="buttonsContainer">
+        <label class="primaryButton">
+          Novi uvoz
+          <input
+            type="file"
+            id="noviUvozInput"
+            style="position: fixed; top: -100%"
+            multiple
+          />
+        </label>
+
+        <label class="secondaryButton">
+          Učitaj uvoz
+          <input
+            type="file"
+            id="ucitajUvozInput"
+            style="position: fixed; top: -100%"
+          />
+        </label>
+      </div>
+      <button class="primaryButton" id="saveAsButton">Spremi kao CSV</button>
+      <!--uvoz -->
+
+      <div id="navigation">
+        <img
+          src="images/leftThreeArrows.svg"
+          id="navigationLeftButton"
+          alt="moveLeft"
+        />
+        <p id="navigationItemNumber">0 od 0</p>
+        <img
+          src="images/rightThreeArrows.svg"
+          id="navigationRightButton"
+          alt="moveRight"
+        />
+      </div>
+
+      <div id="cardsContainer">
+        <!-- Card 1 -->
+        <div class="card selectedCard" id="card1">
+          <img src="" alt="slika2" class="slikaProizvoda" />
+          <div class="cardTextFields">
+            <div>
+              <p class="inputQuickAccessNumber">1</p>
+              <input type="text" class="naslovInput" placeholder="Naslov" />
+            </div>
+            <div>
+              <p class="inputQuickAccessNumber">2</p>
+              <input type="text" class="cijenaInput" placeholder="0.00 €" />
+            </div>
+            <div class="kategorijaContainer">
+              <p class="inputQuickAccessNumber">3</p>
+              <input
+                type="text"
+                class="kategorijaInput"
+                placeholder="Kategorije"
+              />
+              <img src="images/dropdownArrow.svg" alt="dropDown" />
+            </div>
+            <div>
+              <p class="inputQuickAccessNumber">4</p>
+              <textarea class="opisInput" placeholder="Opis"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card" id="card2">
+          <img src="" alt="slika2" class="slikaProizvoda" />
+          <div class="cardTextFields">
+            <div>
+              <p class="inputQuickAccessNumber">1</p>
+              <input type="text" class="naslovInput" placeholder="Naslov" />
+            </div>
+            <div>
+              <p class="inputQuickAccessNumber">2</p>
+              <input type="text" class="cijenaInput" placeholder="0.00 €" />
+            </div>
+            <div class="kategorijaContainer">
+              <p class="inputQuickAccessNumber">3</p>
+              <input
+                type="text"
+                class="kategorijaInput"
+                placeholder="Kategorije"
+              />
+              <img src="images/dropdownArrow.svg" alt="dropDown" />
+            </div>
+            <div>
+              <p class="inputQuickAccessNumber">4</p>
+              <textarea class="opisInput" placeholder="Ovo je test"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card" id="card3">
+          <img src="" alt="slika2" class="slikaProizvoda" />
+          <div class="cardTextFields">
+            <div>
+              <p class="inputQuickAccessNumber">1</p>
+              <input type="text" class="naslovInput" placeholder="Naslov" />
+            </div>
+            <div>
+              <p class="inputQuickAccessNumber">2</p>
+              <input type="text" class="cijenaInput" placeholder="0.00 €" />
+            </div>
+            <div class="kategorijaContainer">
+              <p class="inputQuickAccessNumber">3</p>
+              <input
+                type="text"
+                class="kategorijaInput"
+                placeholder="Kategorije"
+              />
+              <img src="images/dropdownArrow.svg" alt="dropDown" />
+            </div>
+            <div>
+              <p class="inputQuickAccessNumber">4</p>
+              <textarea class="opisInput" placeholder="Ovo je test"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="popUpWindow">
+      <h2>ID i SKU prvog proizvoda</h2>
+      <input type="number" placeholder="ID proizvoda" />
+      <input type="number" placeholder="SKU proizvoda" />
+      <button class="primaryButton" id="setIDSButton">Set</button>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,199 @@
+@font-face {
+  font-family: "Rubik";
+  src: url("fonts/Rubik-VariableFont_wght.ttf");
+}
+
+* {
+  font-family: "Rubik";
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+}
+html {
+  background-color: #fdfdfd;
+
+  height: 100vh;
+}
+
+h1 {
+  width: fit-content;
+  margin: 2rem 0 2rem 0;
+  font-weight: 700;
+  font-size: 4rem;
+  background: linear-gradient(90deg, #4590ba 0%, #4b59b4 50%, #226b5d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.mainContainer {
+  width: 80rem;
+  margin: auto;
+}
+
+label {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 0.5em 1.25em;
+  border-radius: 0.5rem;
+  border: none;
+  margin-right: 2rem;
+  cursor: pointer;
+}
+#buttonsContainer {
+  margin-top: 4rem;
+}
+.primaryButton {
+  background-color: #28536b;
+  border: 4px solid #28536b;
+  color: #fdfdfd;
+}
+.secondaryButton {
+  background-color: transparent;
+  border: 4px solid #28536b;
+  color: #28536b;
+}
+
+/* uvoz */
+#navigation {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* background-color: #c7deea;*/
+  width: 100%;
+  padding: 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: #9d9d9d;
+}
+#navigation > img {
+  cursor: pointer;
+}
+
+/* cards */
+#cardsContainer {
+  display: flex;
+  justify-content: space-between;
+}
+#cardsContainer > .selectedCard {
+  opacity: 1;
+}
+
+.card {
+  width: 32%;
+  opacity: 0.5;
+}
+.card > .slikaProizvoda {
+  width: 100%;
+  height: 25vh;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.card > .cardTextFields .naslovInput,
+.cijenaInput,
+.kategorijaContainer,
+.kategorijaContainer > input,
+.opisInput {
+  padding: 0.5em 0.75em;
+  border-radius: 0.25rem;
+  color: #3d3d3d;
+
+  font-size: 1.25rem;
+  border: none;
+  outline: none;
+}
+.card > .cardTextFields input::placeholder,
+textarea::placeholder {
+  color: #5d5d5d;
+  opacity: 1;
+}
+.card > .cardTextFields > div {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+.card > .cardTextFields .inputQuickAccessNumber {
+  position: absolute;
+  left: -1.5ch;
+  bottom: 0;
+  color: #9d9d9d;
+  font-size: 0.75rem;
+}
+
+.card > .cardTextFields .naslovInput {
+  width: 100%;
+}
+.card > .cardTextFields .cijenaInput {
+  width: 25%;
+}
+.card > .cardTextFields .kategorijaContainer {
+  width: fit-content;
+}
+.card > .cardTextFields .kategorijaInput {
+  padding: 0;
+  background-color: transparent;
+}
+.card > .cardTextFields .opisInput {
+  width: 100%;
+  max-height: 15rem;
+  resize: none;
+}
+.selectedCard .naslovInput {
+  background-color: #fbf4f4;
+}
+.selectedCard .cijenaInput {
+  background-color: #f1f9f0;
+}
+.selectedCard .kategorijaContainer {
+  background-color: #f9f9f0;
+}
+.selectedCard .opisInput {
+  background-color: #f0f1f9;
+}
+
+/* popUp */
+.popUpWindow {
+  background-color: #ffffff;
+  box-shadow: 0 0 3rem rgba(0, 0, 0, 0.125);
+  border-radius: 1rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  width: 50vw;
+  height: 50vh;
+  padding: 4rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.popUpWindow h2 {
+  font-size: 2rem;
+  font-weight: 500;
+  color: #3d3d3d;
+}
+.popUpWindow > input {
+  padding: 0.5em 0.75em;
+  border-radius: 0.25rem;
+  color: #3d3d3d;
+  font-size: 1.25rem;
+  border: 3px solid #9d9d9d;
+  outline: none;
+}
+button {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 0.5em 1.25em;
+  border-radius: 0.5rem;
+  margin-right: 2rem;
+  cursor: pointer;
+}
+#saveAsButton {
+  margin: 0 0 1.5rem 0;
+}
