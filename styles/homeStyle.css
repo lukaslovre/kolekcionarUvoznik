@@ -94,7 +94,8 @@ label {
   margin-bottom: 2rem;
 }
 
-.card > .cardTextFields .naslovInput,
+.card > .cardTextFields .skuInput,
+.naslovInput,
 .cijenaInput,
 .kategorijaContainer,
 .kategorijaContainer > input,

@@ -26,6 +26,8 @@ function itemsRender() {
   navigation.style.display = "flex";
   popUpWindow.style.display = "none";
   saveAsButton.style.display = "block";
+
+  renderSlikeOd(currentItemIndex);
 }
 
 saveAsButton.addEventListener("click", formatAndMakeToFile);
@@ -79,21 +81,19 @@ noviUvozInput.addEventListener("change", () => {
 const navigationItemNumber = document.getElementById("navigationItemNumber");
 function renderSlikeOd(indexPrveSlike) {
   // update nav
-  navigationItemNumber.innerHTML = `${indexPrveSlike + 1}-${
-    indexPrveSlike + 3
-  } od ${imageUrls.length}`;
+  navigationItemNumber.innerHTML = `${indexPrveSlike + 1}-${indexPrveSlike + 3} od ${
+    imageUrls.length
+  }`;
 
   //update images
   cards.forEach((card, i) => {
     if (imageUrls[indexPrveSlike + i]) {
       card.style.visibility = "visible";
       card.querySelector(".slikaProizvoda").src = imageUrls[indexPrveSlike + i];
-      naslovInputs[i].value =
-        finalItemSpecifications[indexPrveSlike + i].naslov;
-      cijenaInputs[i].value =
-        finalItemSpecifications[indexPrveSlike + i].cijena;
-      kategorijaInputs[i].value =
-        finalItemSpecifications[indexPrveSlike + i].kategorija;
+      skuInputs[i].value = finalItemSpecifications[indexPrveSlike + i].sku;
+      naslovInputs[i].value = finalItemSpecifications[indexPrveSlike + i].naslov;
+      cijenaInputs[i].value = finalItemSpecifications[indexPrveSlike + i].cijena;
+      kategorijaInputs[i].value = finalItemSpecifications[indexPrveSlike + i].kategorija;
       opisInputs[i].value = finalItemSpecifications[indexPrveSlike + i].opis;
     } else {
       card.style.visibility = "hidden";
@@ -120,8 +120,7 @@ navigationRightButton.addEventListener("click", loadNextPage);
 
 // FUNKCIJE NAD INPUTIMA
 function pohraniPromjene(inputNode, nizProizvoda, atribut) {
-  const relativeCardIndex =
-    inputNode.parentNode.parentNode.parentNode.id.slice(-1); // 1, 2 ili 3
+  const relativeCardIndex = inputNode.parentNode.parentNode.parentNode.id.slice(-1); // 1, 2 ili 3
   const absoluteCardIndex = currentItemIndex + Number(relativeCardIndex);
 
   if (atribut == "cijena") {
@@ -132,8 +131,7 @@ function pohraniPromjene(inputNode, nizProizvoda, atribut) {
 }
 
 function markCardAsSelected(inputNode) {
-  const relativeCardIndex =
-    inputNode.parentNode.parentNode.parentNode.id.slice(-1); // 1, 2 ili 3;
+  const relativeCardIndex = inputNode.parentNode.parentNode.parentNode.id.slice(-1); // 1, 2 ili 3;
   cards.forEach((card, i) => {
     card.classList.remove("selectedCard");
     if (i + 1 == relativeCardIndex) {
@@ -154,6 +152,15 @@ allInputs.forEach((input) => {
     markCardAsSelected(e.target);
   });
 });
+
+// spremanje SKU inputa
+const skuInputs = document.querySelectorAll(".skuInput");
+for (const skuInput of skuInputs) {
+  skuInput.addEventListener("change", (e) => {
+    console.log("Sku changed");
+    pohraniPromjene(e.target, finalItemSpecifications, "sku");
+  });
+}
 
 // spremanje NASLOV inputa
 const naslovInputs = document.querySelectorAll(".naslovInput");
