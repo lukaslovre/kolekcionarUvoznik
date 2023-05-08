@@ -1,8 +1,27 @@
-const cardsContainer = document.getElementById("cardsContainer");
-const navigation = document.getElementById("navigation");
+// home page
 const buttonsContainer = document.getElementById("buttonsContainer");
+const noviUvozInput = document.getElementById("noviUvozInput");
+// pop up
 const popUpWindow = document.querySelector(".popUpWindow");
+const popUpInputs = popUpWindow.querySelectorAll("input");
+const popUpButton = document.getElementById("popUpButton");
+// items page
 const saveAsButton = document.getElementById("saveAsButton");
+const navigation = document.getElementById("navigation");
+const navigationItemNumber = document.getElementById("navigationItemNumber");
+const navigationLeftButton = document.getElementById("navigationLeftButton");
+const navigationRightButton = document.getElementById("navigationRightButton");
+const cardsContainer = document.getElementById("cardsContainer");
+const cards = document.querySelectorAll(".card");
+const allInputs = cardsContainer.querySelectorAll("input, textarea");
+const lastInput = allInputs[allInputs.length - 1];
+const skuInputs = document.querySelectorAll(".skuInput");
+const idInputs = document.querySelectorAll(".idInput");
+const kataloskiBrojInputs = document.querySelectorAll(".kataloskiBrojInput");
+const naslovInputs = document.querySelectorAll(".naslovInput");
+const cijenaInputs = document.querySelectorAll(".cijenaInput");
+const kategorijaInputs = document.querySelectorAll(".kategorijaInput");
+const opisInputs = document.querySelectorAll(".opisInput");
 
 homePageRender();
 function homePageRender() {
@@ -12,7 +31,6 @@ function homePageRender() {
   popUpWindow.style.display = "none";
   saveAsButton.style.display = "none";
 }
-
 function popUpBoxRender() {
   buttonsContainer.style.display = "none";
   cardsContainer.style.display = "none";
@@ -27,26 +45,51 @@ function itemsRender() {
   popUpWindow.style.display = "none";
   saveAsButton.style.display = "block";
 
-  renderSlikeOd(currentItemIndex);
+  renderCardsFrom(currentItemIndex);
 }
 
+// Event listeneri
+noviUvozInput.addEventListener("change", handleFileUpload);
+popUpButton.addEventListener("click", initializeItemIDsAndSKUs);
+navigationLeftButton.addEventListener("click", loadPreviousPage);
+navigationRightButton.addEventListener("click", loadNextPage);
 saveAsButton.addEventListener("click", formatAndMakeToFile);
+lastInput.addEventListener("keydown", loadNextPageIfTab);
+allInputs.forEach((input) => {
+  input.addEventListener("focus", (e) => {
+    markCardAsSelected(e.target);
+  });
+  input.addEventListener("change", (e) => {
+    updateItemSpecification(e.target);
+  });
+});
+lastInput.removeEventListener("change", (e) => {
+  updateItemSpecification(e.target);
+});
+cijenaInputs.forEach((cijenaInput) => {
+  cijenaInput.addEventListener("change", formatPriceAndAdjustWidth);
+});
+opisInputs.forEach((opisInput) => {
+  opisInput.addEventListener("input", adjustHeight);
+});
+removeEventListener;
+// Globalne varijable
+const imageUrls = []; //lista slika (podatci o slikama, ne samo url)
+let currentItemIndex = 0; // apsolutni index (0 - brojItema)
+const finalItemSpecifications = []; // finalni podaci o itemima
 
-const noviUvozInput = document.getElementById("noviUvozInput");
-const cards = document.querySelectorAll(".card");
+// aktivni card se malo rasiri, a ova dva se smanje i postanu tamnija i mozda mutna
+// ctrl + gornja strelica da odes polje u nazad
 
-const imageUrls = [];
-let currentItemIndex = 0;
+/* funkcije */
 
-const finalItemSpecifications = [];
-
-// na odabir slika
-noviUvozInput.addEventListener("change", () => {
+function handleFileUpload() {
+  // Check if files are selected
   if (!noviUvozInput.files) return;
 
-  console.log(noviUvozInput.files);
   popUpBoxRender();
 
+  // Reset imageUrls and add new images to finalItemSpecifications
   let selectedImageFiles = noviUvozInput.files;
   imageUrls.length = 0; // ocisti prijasnje slike
 
@@ -60,41 +103,70 @@ noviUvozInput.addEventListener("change", () => {
       kategorija: "",
       opis: "",
       imeSlike: image.name,
+      kataloskiBroj: "N/A",
     });
     itemCounter++;
 
     const reader = new FileReader();
-
     reader.onload = (e) => {
-      console.log(e.target.result);
       imageUrls.push(e.target.result);
       if (imageUrls.length == selectedImageFiles.length) {
-        renderSlikeOd(currentItemIndex);
+        renderCardsFrom(currentItemIndex);
+        console.log(imageUrls);
+        console.log(finalItemSpecifications);
       }
     };
-
     reader.readAsDataURL(image);
   }
-  console.log(finalItemSpecifications);
-});
+}
+function initializeItemIDsAndSKUs() {
+  const startingID = parseInt(popUpInputs[0].value);
+  const startingSKU = parseInt(popUpInputs[1].value);
 
-const navigationItemNumber = document.getElementById("navigationItemNumber");
-function renderSlikeOd(indexPrveSlike) {
-  // update nav
-  navigationItemNumber.innerHTML = `${indexPrveSlike + 1}-${indexPrveSlike + 3} od ${
+  // Validate input values
+  if (!startingID || !startingSKU) return;
+
+  finalItemSpecifications.forEach((item) => {
+    item.id += startingID;
+    item.sku += startingSKU;
+  });
+
+  itemsRender();
+}
+function loadNextPage() {
+  updateItemSpecification(lastInput);
+  if (currentItemIndex + 3 >= imageUrls.length) return;
+  currentItemIndex += 3;
+  renderCardsFrom(currentItemIndex);
+}
+function loadPreviousPage() {
+  updateItemSpecification(lastInput);
+  if (currentItemIndex - 3 < 0) return;
+  currentItemIndex -= 3;
+  renderCardsFrom(currentItemIndex);
+}
+function renderCardsFrom(startIndex) {
+  // Update navigation item number
+  const endIndex = Math.min(startIndex + 3, imageUrls.length);
+  navigationItemNumber.textContent = `${startIndex + 1}-${endIndex} of ${
     imageUrls.length
   }`;
 
-  //update images
-  cards.forEach((card, i) => {
-    if (imageUrls[indexPrveSlike + i]) {
+  // Update images
+  cards.forEach((card, index) => {
+    const imageIndex = startIndex + index;
+    if (imageUrls[imageIndex]) {
       card.style.visibility = "visible";
-      card.querySelector(".slikaProizvoda").src = imageUrls[indexPrveSlike + i];
-      skuInputs[i].value = finalItemSpecifications[indexPrveSlike + i].sku;
-      naslovInputs[i].value = finalItemSpecifications[indexPrveSlike + i].naslov;
-      cijenaInputs[i].value = finalItemSpecifications[indexPrveSlike + i].cijena;
-      kategorijaInputs[i].value = finalItemSpecifications[indexPrveSlike + i].kategorija;
-      opisInputs[i].value = finalItemSpecifications[indexPrveSlike + i].opis;
+      const item = finalItemSpecifications[imageIndex];
+      card.querySelector(".slikaProizvoda").src = imageUrls[imageIndex];
+      skuInputs[index].value = item.sku;
+      idInputs[index].value = item.id;
+      kataloskiBrojInputs[index].value = item.kataloskiBroj;
+      // ADD: kataloski broj
+      naslovInputs[index].value = item.naslov;
+      cijenaInputs[index].value = item.cijena;
+      kategorijaInputs[index].value = item.kategorija;
+      opisInputs[index].value = item.opis;
     } else {
       card.style.visibility = "hidden";
     }
@@ -102,115 +174,50 @@ function renderSlikeOd(indexPrveSlike) {
 
   saveAsButton.focus();
 }
-
-const navigationLeftButton = document.getElementById("navigationLeftButton");
-const navigationRightButton = document.getElementById("navigationRightButton");
-function loadNextPage() {
-  if (currentItemIndex + 3 >= imageUrls.length) return;
-  currentItemIndex += 3;
-  renderSlikeOd(currentItemIndex);
-}
-function loadPreviousPage() {
-  if (currentItemIndex - 3 < 0) return;
-  currentItemIndex -= 3;
-  renderSlikeOd(currentItemIndex);
-}
-navigationLeftButton.addEventListener("click", loadPreviousPage);
-navigationRightButton.addEventListener("click", loadNextPage);
-
-// FUNKCIJE NAD INPUTIMA
-function pohraniPromjene(inputNode, nizProizvoda, atribut) {
-  const relativeCardIndex = inputNode.parentNode.parentNode.parentNode.id.slice(-1); // 1, 2 ili 3
+function updateItemSpecification(inputNode) {
+  const card = inputNode.closest(".card");
+  const relativeCardIndex = card.id.slice(-1) - 1; // 0, 1 ili 2
   const absoluteCardIndex = currentItemIndex + Number(relativeCardIndex);
 
-  if (atribut == "cijena") {
-    nizProizvoda[absoluteCardIndex - 1][atribut] = parseFloat(inputNode.value);
+  /*
+  if (atribute == "cijena") {
+    finalItemSpecifications[absoluteCardIndex][atribute] = parseFloat(inputNode.value);
   } else {
-    nizProizvoda[absoluteCardIndex - 1][atribut] = inputNode.value;
+    finalItemSpecifications[absoluteCardIndex][atribute] = inputNode.value;
   }
-}
+  */
+  if (finalItemSpecifications[absoluteCardIndex]) {
+    const item = finalItemSpecifications[absoluteCardIndex];
+    item.sku = skuInputs[relativeCardIndex].value;
+    item.id = idInputs[relativeCardIndex].value;
+    item.kataloskiBroj = kataloskiBrojInputs[relativeCardIndex].value;
+    // ADD: kataloski broj
+    item.naslov = naslovInputs[relativeCardIndex].value;
+    item.cijena = parseFloat(cijenaInputs[relativeCardIndex].value);
+    item.kategorija = kategorijaInputs[relativeCardIndex].value;
+    item.opis = opisInputs[relativeCardIndex].value;
+  }
 
+  /*
+  card.querySelector(".slikaProizvoda").src = imageUrls[imageIndex];
+  skuInputs[index].value = item.sku;
+  naslovInputs[index].value = item.naslov;
+  cijenaInputs[index].value = item.cijena;
+  kategorijaInputs[index].value = item.kategorija;
+  opisInputs[index].value = item.opis;
+  */
+}
 function markCardAsSelected(inputNode) {
-  const relativeCardIndex = inputNode.parentNode.parentNode.parentNode.id.slice(-1); // 1, 2 ili 3;
-  cards.forEach((card, i) => {
-    card.classList.remove("selectedCard");
-    if (i + 1 == relativeCardIndex) {
-      card.classList.add("selectedCard");
-    }
+  const card = inputNode.closest(".card");
+
+  cards.forEach((otherCard) => {
+    otherCard.classList.remove("selectedCard");
   });
+
+  card.classList.add("selectedCard");
 }
-
-const allInputs = cardsContainer.querySelectorAll("input, textarea");
-allInputs[allInputs.length - 1].addEventListener("keydown", (e) => {
-  if (e.keyCode != 9) return;
-  loadNextPage();
-});
-
-console.log(allInputs);
-allInputs.forEach((input) => {
-  input.addEventListener("focus", (e) => {
-    markCardAsSelected(e.target);
-  });
-});
-
-// spremanje SKU inputa
-const skuInputs = document.querySelectorAll(".skuInput");
-for (const skuInput of skuInputs) {
-  skuInput.addEventListener("change", (e) => {
-    console.log("Sku changed");
-    pohraniPromjene(e.target, finalItemSpecifications, "sku");
-  });
-}
-
-// spremanje NASLOV inputa
-const naslovInputs = document.querySelectorAll(".naslovInput");
-for (const naslovInput of naslovInputs) {
-  naslovInput.addEventListener("change", (e) => {
-    pohraniPromjene(e.target, finalItemSpecifications, "naslov");
-  });
-}
-
-// automatsko dodavanje € simbola i spremanje CIJENA input
-// STAVITI DA se pomakne decimalno mjesto za 2 mjesta automatski
-// možda i ne, staviti toggle postavku
-const cijenaInputs = document.querySelectorAll(".cijenaInput");
-for (const cijenaInput of cijenaInputs) {
-  cijenaInput.addEventListener("change", (e) => {
-    // dodaj € na kraj stringa
-    let onlyNumbers = parseFloat(e.target.value);
-    e.target.value = onlyNumbers + " €";
-
-    // promjeni sirinu
-    e.target.style.width = "";
-    e.target.style.width = e.target.scrollWidth + "px";
-
-    // pohrani promjene
-    pohraniPromjene(e.target, finalItemSpecifications, "cijena");
-  });
-}
-
-// spremanje KATEGORIJE inputa
-const kategorijaInputs = document.querySelectorAll(".kategorijaInput");
-for (const kategorijaInput of kategorijaInputs) {
-  kategorijaInput.addEventListener("change", (e) => {
-    pohraniPromjene(e.target, finalItemSpecifications, "kategorija");
-  });
-}
-
-// automatski vertikalni resize Opis inputa
-const opisInputs = document.querySelectorAll(".opisInput");
-for (const opisInput of opisInputs) {
-  opisInput.addEventListener("input", (e) => {
-    // promjeni visinu
-    e.target.style.height = "";
-    e.target.style.height = e.target.scrollHeight + "px";
-
-    // pohrani promjene
-    pohraniPromjene(e.target, finalItemSpecifications, "opis");
-  });
-}
-
 function formatAndMakeToFile() {
+  updateItemSpecification(lastInput);
   // formating
   const csvAttributes = [
     "ID",
@@ -249,9 +256,13 @@ function formatAndMakeToFile() {
     "Grupirani proizvodi",
     "Uvećana prodaja",
     "Dodatna prodaja",
-    "Eksterni  URL",
+    "Eksterni URL",
     "Tekst dugmeta",
     "Pozicija",
+    "Atribut 1 ime",
+    "Atribut 1 vrijednosti",
+    "Atribut 1 vidljiv",
+    "Atribut 1 globalni",
   ];
 
   let csvValues = [
@@ -294,6 +305,11 @@ function formatAndMakeToFile() {
     "",
     "",
     "0",
+    "Kataloški broj",
+    "KATALOSKI_BROJ",
+    "1",
+    "1",
+    "",
   ];
 
   let csvFile = '"';
@@ -303,28 +319,32 @@ function formatAndMakeToFile() {
   // napraviti funkciju za ubacivanje item objekta u boilerplate
 
   const now = new Date();
+  const dan = now.getDate().toString().padStart(2, "0");
   const mjesec = (now.getMonth() + 1).toString().padStart(2, "0");
   const godina = now.getFullYear().toString();
+
   let photoNamePrefix = `https://kolekcionar.hr/wp-content/uploads/${godina}/${mjesec}/`;
+
   for (const item of finalItemSpecifications) {
     csvValues[0] = item.id; //item.id
     csvValues[2] = item.sku;
     csvValues[3] = item.naslov;
-    csvValues[8] = item.opis.replaceAll("\n", "\\n"); // možda ne treba ovo, pogledati kako ivanov interpetira
+    csvValues[8] = item.opis.replaceAll("\n", "\\n"); // možda ne treba ovo, pogledati kako ivanov interpretira
     csvValues[25] = item.cijena;
     csvValues[26] = item.kategorija;
     csvValues[29] = photoNamePrefix + item.imeSlike;
+    csvValues[40] = item.kataloskiBroj;
     csvFile += '"\n"';
     csvFile += csvValues.join('", "');
   }
   csvFile += '"';
+
   console.log(finalItemSpecifications);
   console.log(csvFile);
 
   // saving to file
-  saveCSV("sisata datka", csvFile);
+  saveCSV(`NoviUvoz-${godina}${mjesec}${dan}`, csvFile);
 }
-
 function saveCSV(fileName, csvFile) {
   const blob = new Blob([csvFile], {
     type: "text/csv;charset=utf-8;",
@@ -347,19 +367,25 @@ function saveCSV(fileName, csvFile) {
     }
   }
 }
-// aktivni card se malo rasiri, a ova dva se smanje i postanu tamnija i mozda mutna
-// ctrl + gornja strelica da odes polje u nazad
 
-const setIDSButton = document.getElementById("setIDSButton");
-const idInputs = popUpWindow.querySelectorAll("input");
-setIDSButton.addEventListener("click", () => {
-  startingID = parseInt(idInputs[0].value);
-  startingSKU = parseInt(idInputs[1].value);
+// helper functions
+function loadNextPageIfTab(e) {
+  // keyCode 9 = 'tab'
+  if (e.keyCode == 9) {
+    updateItemSpecification(lastInput);
+    loadNextPage();
+  }
+}
+function formatPriceAndAdjustWidth(e) {
+  // dodaj € na kraj stringa
+  let onlyNumbers = parseFloat(e.target.value);
+  e.target.value = onlyNumbers + " €";
 
-  finalItemSpecifications.forEach((item) => {
-    item.id += startingID;
-    item.sku += startingSKU;
-  });
-
-  itemsRender();
-});
+  // promjeni sirinu
+  e.target.style.width = "";
+  e.target.style.width = e.target.scrollWidth + "px";
+}
+function adjustHeight(e) {
+  e.target.style.height = "";
+  e.target.style.height = e.target.scrollHeight + "px";
+}

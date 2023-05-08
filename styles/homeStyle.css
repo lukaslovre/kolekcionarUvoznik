@@ -91,10 +91,9 @@ label {
   height: 25vh;
   object-fit: cover;
   border-radius: 0.5rem;
-  margin-bottom: 2rem;
 }
 
-.card > .cardTextFields .skuInput,
+.card > .cardTextFields,
 .naslovInput,
 .cijenaInput,
 .kategorijaContainer,
@@ -154,6 +153,25 @@ textarea::placeholder {
 }
 .selectedCard .opisInput {
   background-color: #f0f1f9;
+}
+
+.secondaryInputContainer {
+  display: flex;
+  gap: 1rem;
+}
+
+.secondaryInputContainer .secondaryInputLabel {
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: #5d5d5d;
+}
+.secondaryInputContainer input {
+  width: 100%;
+  padding: 0.5em 0;
+  font-size: 1.25rem;
+  color: #cdcdcd;
+  border: none;
+  outline: none;
 }
 
 /* popUp */
