@@ -1,4 +1,4 @@
-// Elementi
+// HTML Elementi
 const importImagesButton = document.getElementById("import-images-button");
 const modeSelectionOptions = document.querySelectorAll(".mode-selection-options");
 
@@ -13,13 +13,13 @@ const kategorijaInput = document.getElementById("kategorija-input");
 const opisInput = document.getElementById("opis-input");
 const defaultVrijednostiInputs = [naslovInput, cijenaInput, kategorijaInput, opisInput];
 
-// globalne varijable
+// Globalne varijable
 const imageUrls = [];
 const finalItemSpecifications = [];
 const modeDataPresets = [
   {
     presetName: "Kovanice",
-    naslov: "kategorija grad",
+    naslov: "",
     cijena: "",
     kategorija: "Početna / NUMIZMATIKA / Kovani novac / ",
     opis: "",
@@ -27,7 +27,7 @@ const modeDataPresets = [
   },
   {
     presetName: "Novčanice",
-    naslov: "kategorija grad",
+    naslov: "",
     cijena: "",
     kategorija: "Početna / NUMIZMATIKA / Papirni novac / ",
     opis: "Serijski broj novčanice kod UNC kvalitete se može razlikovati od broja koji je na slici.\nKod korištenih novčanica G, VG, F, VF, XF kupac dobije novčanicu koja je na slici.",
@@ -35,7 +35,7 @@ const modeDataPresets = [
   },
   {
     presetName: "Razglednice",
-    naslov: "kategorija grad",
+    naslov: "",
     cijena: "",
     kategorija: "Početna / RAZGLEDNICE / ",
     opis: "Stanje razglednice vidljivo na slici.",
@@ -48,10 +48,9 @@ modeSelectionOptions.forEach((option) => {
   option.addEventListener("click", fillInputsBasedOnMode);
   option.addEventListener("click", changeOptionStyleToSelected);
 });
-cijenaInput.addEventListener("change", addMoneySimbolToInput);
 importImagesButton.addEventListener("change", handleFileUpload);
 
-// funkcije
+// Funkcije
 function fillInputsBasedOnMode(e) {
   const selectedOptionName = e.target
     .closest(".mode-selection-options")
@@ -74,14 +73,14 @@ function changeOptionStyleToSelected(e) {
   }
   selectedOptionElement.classList.add("selected-option");
 }
-
-function handleFileUpload() {
+async function handleFileUpload() {
   // Check if files are selected
   if (!importImagesButton.files) return;
 
-  // Reset imageUrls and add new images to finalItemSpecifications
-  imageUrls.length = 0; // ocisti prijasnje slike
+  // Clear previous images
+  imageUrls.length = 0;
 
+  // Add new images to finalItemSpecifications
   let itemCounter = 0;
   for (const image of importImagesButton.files) {
     finalItemSpecifications.push({
@@ -94,33 +93,31 @@ function handleFileUpload() {
       imeSlike: image.name,
       kataloskiBroj: katBrInput.value,
     });
+    await loadImages(image);
     itemCounter++;
+  }
 
+  // Save data and redirect to itemPage.html
+  localStorage.setItem("imageUrls", JSON.stringify(imageUrls));
+  localStorage.setItem("itemData", JSON.stringify(finalItemSpecifications));
+  window.location.href = "/itemPage.html";
+}
+
+// Pomocne funckcije
+function loadImages(image) {
+  return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       imageUrls.push(e.target.result);
+      /*
       if (imageUrls.length == importImagesButton.files.length) {
-        // renderCardsFrom(currentItemIndex);
-        console.log(imageUrls);
-        console.log(finalItemSpecifications);
         localStorage.setItem("imageUrls", JSON.stringify(imageUrls));
-        localStorage.setItem(
-          "finalItemSpecifications",
-          JSON.stringify(finalItemSpecifications)
-        );
+        localStorage.setItem("itemData", JSON.stringify(finalItemSpecifications));
         window.location.href = "/itemPage.html";
       }
+      */
+      resolve();
     };
     reader.readAsDataURL(image);
-  }
-}
-
-// helper funkcije
-function addMoneySimbolToInput(e) {
-  let onlyNumbers = parseFloat(e.target.value);
-  if (onlyNumbers) {
-    e.target.value = onlyNumbers + " €";
-  } else {
-    e.target.value = "";
-  }
+  });
 }
