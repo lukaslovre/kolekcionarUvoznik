@@ -14,6 +14,7 @@ const opisInput = document.getElementById("opis-input");
 const defaultVrijednostiInputs = [naslovInput, cijenaInput, kategorijaInput, opisInput];
 
 // Globalne varijable
+const imagePath = "slikeProizvoda/";
 const imageUrls = [];
 const finalItemSpecifications = [];
 const modeDataPresets = [
@@ -21,7 +22,7 @@ const modeDataPresets = [
     presetName: "Kovanice",
     naslov: "",
     cijena: "",
-    kategorija: "Početna / NUMIZMATIKA / Kovani novac / ",
+    kategorija: "NUMIZMATIKA / Kovani novac / ",
     opis: "",
     katBr: "N/A",
   },
@@ -29,7 +30,7 @@ const modeDataPresets = [
     presetName: "Novčanice",
     naslov: "",
     cijena: "",
-    kategorija: "Početna / NUMIZMATIKA / Papirni novac / ",
+    kategorija: "NUMIZMATIKA / Papirni novac / ",
     opis: "Serijski broj novčanice kod UNC kvalitete se može razlikovati od broja koji je na slici.\nKod korištenih novčanica G, VG, F, VF, XF kupac dobije novčanicu koja je na slici.",
     katBr: "",
   },
@@ -37,7 +38,7 @@ const modeDataPresets = [
     presetName: "Razglednice",
     naslov: "",
     cijena: "",
-    kategorija: "Početna / RAZGLEDNICE / ",
+    kategorija: "RAZGLEDNICE / ",
     opis: "Stanje razglednice vidljivo na slici.",
     katBr: "",
   },
@@ -93,14 +94,15 @@ async function handleFileUpload() {
       imeSlike: image.name,
       kataloskiBroj: katBrInput.value,
     });
-    await loadImages(image);
+    imageUrls.push(imagePath + image.name);
+    //await loadImages(image);
     itemCounter++;
   }
 
   // Save data and redirect to itemPage.html
   localStorage.setItem("imageUrls", JSON.stringify(imageUrls));
   localStorage.setItem("itemData", JSON.stringify(finalItemSpecifications));
-  window.location.href = "/itemPage.html";
+  window.location.href = "itemPage.html";
 }
 
 // Pomocne funckcije

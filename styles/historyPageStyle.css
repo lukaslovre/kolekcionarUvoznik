@@ -1,0 +1,89 @@
+@font-face {
+  font-family: "Rubik";
+  src: url("fonts/Rubik-VariableFont_wght.ttf");
+}
+
+* {
+  font-family: "Rubik";
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+}
+html {
+  background-color: #fdfdfd;
+  height: 100vh;
+}
+
+#width-container {
+  width: 90rem;
+  margin: auto;
+}
+header {
+  margin: 2rem 0 4rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+h1 {
+  width: fit-content; /* za gradient */
+  font-weight: 700;
+  font-size: 4rem;
+  background: linear-gradient(90deg, #4590ba 0%, #4b59b4 50%, #226b5d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+button {
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 0.5em 1.25em;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+#saveAsButton {
+  margin-bottom: 2rem;
+  background-color: #28536b;
+  color: #fdfdfd;
+}
+
+#currentImportContainer {
+  margin-bottom: 5rem;
+}
+.importContainerTitle {
+  color: #3d3d3d;
+  font-weight: 500;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.importItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+.itemData {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  column-gap: 2rem;
+  row-gap: 0.5rem;
+
+  color: #5d5d5d;
+  font-size: 1rem;
+  font-weight: 400;
+}
+.itemData .opis {
+  min-width: 32ch;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.icons {
+  margin-left: 1rem;
+  display: flex;
+  gap: 1rem;
+}

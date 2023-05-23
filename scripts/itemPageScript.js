@@ -1,4 +1,5 @@
 // HTML Elementi
+const showHistoryButton = document.getElementById("showHistoryButton");
 const saveAsButton = document.getElementById("saveAsButton");
 const navigation = document.getElementById("navigation");
 const navigationItemNumber = document.getElementById("navigationItemNumber");
@@ -23,6 +24,7 @@ window.onbeforeunload = () => {
   localStorage.setItem("itemData", JSON.stringify(finalItemSpecifications));
   return true;
 };
+showHistoryButton.addEventListener("click", goToHistoryPage);
 saveAsButton.addEventListener("click", formatAndMakeToFile);
 navigationLeftButton.addEventListener("click", loadPreviousPage);
 navigationRightButton.addEventListener("click", loadNextPage);
@@ -55,6 +57,9 @@ let currentItemIndex = 0; // apsolutni index, zapravo pokazatelj na kojoj strani
 renderCardsFrom(currentItemIndex);
 
 /* Funkcije */
+function goToHistoryPage() {
+  window.location.href = "historyPage.html";
+}
 function loadNextPage() {
   updateItemSpecification(lastInput);
   if (currentItemIndex + 3 >= imageUrls.length) return;
@@ -212,21 +217,16 @@ function formatAndMakeToFile() {
     "KATALOSKI_BROJ",
     "1",
     "1",
-    "",
   ];
 
   let csvFile = '"';
   csvFile += csvAttributes.join('", "');
 
-  // zamjeniti gore bolierplate sa tocnim vrijednostima
-  // napraviti funkciju za ubacivanje item objekta u boilerplate
-
   const now = new Date();
   const dan = now.getDate().toString().padStart(2, "0");
   const mjesec = (now.getMonth() + 1).toString().padStart(2, "0");
   const godina = now.getFullYear().toString();
-
-  let photoNamePrefix = `https://kolekcionar.hr/wp-content/uploads/${godina}/${mjesec}/`;
+  const photoNamePrefix = `https://kolekcionar.hr/wp-content/uploads/${godina}/${mjesec}/`;
 
   for (const item of finalItemSpecifications) {
     csvValues[0] = item.id; //item.id
@@ -234,9 +234,19 @@ function formatAndMakeToFile() {
     csvValues[3] = item.naslov;
     csvValues[8] = item.opis.replaceAll("\n", "\\n"); // možda ne treba ovo, pogledati kako ivanov interpretira
     csvValues[25] = item.cijena;
-    csvValues[26] = item.kategorija;
+    csvValues[26] = item.kategorija.replaceAll("/", ">");
     csvValues[29] = photoNamePrefix + item.imeSlike;
-    csvValues[40] = item.kataloskiBroj;
+    if (item.kataloskiBroj == "N/A" || item.kataloskiBroj == "") {
+      csvValues[39] = "";
+      csvValues[40] = "";
+      csvValues[41] = "";
+      csvValues[42] = "";
+    } else {
+      csvValues[39] = "Kataloški broj";
+      csvValues[40] = item.kataloskiBroj;
+      csvValues[41] = "1";
+      csvValues[42] = "1";
+    }
     csvFile += '"\n"';
     csvFile += csvValues.join('", "');
   }
@@ -306,6 +316,7 @@ function addCategoryToBeginningOfTitle(e) {
 function copyPreviousValueToInput(e) {
   // keyCode 13 = 'enter'
   if (e.keyCode == 13 && e.shiftKey == false) {
+    e.preventDefault();
     const card = e.target.closest(".card");
     const relativeCardIndex = Number(card.id.slice(-1)) - 1; // 0, 1 ili 2
     const absoluteCardIndex = currentItemIndex + relativeCardIndex;
