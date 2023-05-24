@@ -65,6 +65,9 @@ button {
   margin-bottom: 2.5rem;
 }
 .itemData {
+  max-height: 7.75rem;
+  overflow-y: scroll;
+
   width: 100%;
   display: grid;
   grid-template-columns: auto auto 1fr;
@@ -74,6 +77,9 @@ button {
   color: #5d5d5d;
   font-size: 1rem;
   font-weight: 400;
+}
+.itemData .naslov {
+  min-width: 50ch;
 }
 .itemData .opis {
   min-width: 32ch;
@@ -86,4 +92,7 @@ button {
   margin-left: 1rem;
   display: flex;
   gap: 1rem;
+}
+img {
+  cursor: pointer;
 }

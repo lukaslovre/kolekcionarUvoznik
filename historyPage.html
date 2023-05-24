@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles/historyPageStyle.css" />
-    <script src="scripts/itemPageScript.js" defer></script>
+    <script src="scripts/historyPageScript.js" defer></script>
     <title>Kolekcionar Uvoznik</title>
   </head>
   <body>
@@ -18,87 +18,25 @@
       <div id="currentImportContainer">
         <p class="importContainerTitle">Trenutni uvoz</p>
         <div class="importItem">
-          <div class="itemData">
-            <p class="naslov">
-              France Francuska 2 Euro 2019 – Asterix, France Francuska 2 Euro 2019 –
-              Asterix
-            </p>
-            <p class="cijena">5 €</p>
-            <p class="opis">
-              Kupac dobija jednu od 3 moguće kartice, ovisno o tome koje su dostupne.
-            </p>
-            <p class="naslov">Spain Španjolska 2 Euro 2023 – Old City of Caceres</p>
-            <p class="cijena">5 €</p>
-            <p class="opis">
-              Kupac dobija jednu od 3 moguće kartice, ovisno o tome koje su dostupne.
-            </p>
-            <p class="naslov">Germany Njemačka 2 Euro 2023 – Charlemagne</p>
-            <p class="cijena">5 €</p>
-            <p class="opis">
-              Kupac dobija jednu od 3 moguće kartice, ovisno o tome koje su dostupne.
-            </p>
-          </div>
+          <div class="itemData"></div>
           <div class="icons">
-            <img src="images/trash.svg" alt="trash icon" />
-            <img src="images/edit.svg" alt="edit icon" />
+            <img src="images/edit.svg" alt="edit icon" id="editCurrentImportButton" />
+            <img src="images/save.svg" alt="save icon" id="saveCurrentImportButton" />
           </div>
         </div>
       </div>
 
-      <div id="saveImportsContainer">
+      <div id="savedImportsContainer">
         <p class="importContainerTitle">Spremljeni uvozi</p>
-        <div class="importItem">
-          <div class="itemData">
-            <p class="naslov">
-              France Francuska 2 Euro 2019 – Asterix, France Francuska 2 Euro 2019 –
-              Asterix
-            </p>
-            <p class="cijena">5 €</p>
-            <p class="opis">
-              Kupac dobija jednu od 3 moguće kartice, ovisno o tome koje su dostupne.
-            </p>
-            <p class="naslov">Spain Španjolska 2 Euro 2023 – Old City of Caceres</p>
-            <p class="cijena">5 €</p>
-            <p class="opis">
-              Kupac dobija jednu od 3 moguće kartice, ovisno o tome koje su dostupne.
-            </p>
-            <p class="naslov">Germany Njemačka 2 Euro 2023 – Charlemagne</p>
-            <p class="cijena">5 €</p>
-            <p class="opis">
-              Kupac dobija jednu od 3 moguće kartice, ovisno o tome koje su dostupne.
-            </p>
+        <template id="importItemTemplate">
+          <div class="importItem">
+            <div class="itemData"></div>
+            <div class="icons">
+              <img src="images/edit.svg" alt="edit icon" class="editButton" />
+              <img src="images/trash.svg" alt="trash icon" class="deleteButton" />
+            </div>
           </div>
-          <div class="icons">
-            <img src="images/trash.svg" alt="trash icon" />
-            <img src="images/edit.svg" alt="edit icon" />
-          </div>
-        </div>
-        <div class="importItem">
-          <div class="itemData">
-            <p class="naslov">
-              France Francuska 2 Euro 2019 – Asterix, France Francuska 2 Euro 2019 –
-              Asterix
-            </p>
-            <p class="cijena">5 €</p>
-            <p class="opis">
-              Kupac dobija jednu od 3 moguće kartice, ovisno o tome koje su dostupne.
-            </p>
-            <p class="naslov">Spain Španjolska 2 Euro 2023 – Old City of Caceres</p>
-            <p class="cijena">5 €</p>
-            <p class="opis">
-              Kupac dobija jednu od 3 moguće kartice, ovisno o tome koje su dostupne.
-            </p>
-            <p class="naslov">Germany Njemačka 2 Euro 2023 – Charlemagne</p>
-            <p class="cijena">5 €</p>
-            <p class="opis">
-              Kupac dobija jednu od 3 moguće kartice, ovisno o tome koje su dostupne.
-            </p>
-          </div>
-          <div class="icons">
-            <img src="images/trash.svg" alt="trash icon" />
-            <img src="images/edit.svg" alt="edit icon" />
-          </div>
-        </div>
+        </template>
       </div>
     </div>
   </body>
