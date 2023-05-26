@@ -63,6 +63,7 @@ button {
   display: flex;
   align-items: center;
   margin-bottom: 2.5rem;
+  background-color: #fbfbfb;
 }
 .itemData {
   max-height: 7.75rem;
@@ -95,4 +96,15 @@ button {
 }
 img {
   cursor: pointer;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
 }

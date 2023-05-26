@@ -14,9 +14,7 @@ const opisInput = document.getElementById("opis-input");
 const defaultVrijednostiInputs = [naslovInput, cijenaInput, kategorijaInput, opisInput];
 
 // Globalne varijable
-const imagePath = "slikeProizvoda/";
-const imageUrls = [];
-const finalItemSpecifications = [];
+const itemData = [];
 const modeDataPresets = [
   {
     presetName: "Kovanice",
@@ -74,17 +72,14 @@ function changeOptionStyleToSelected(e) {
   }
   selectedOptionElement.classList.add("selected-option");
 }
-async function handleFileUpload() {
+function handleFileUpload() {
   // Check if files are selected
   if (!importImagesButton.files) return;
 
-  // Clear previous images
-  imageUrls.length = 0;
-
-  // Add new images to finalItemSpecifications
+  // Add preset data and images to itemData
   let itemCounter = 0;
   for (const image of importImagesButton.files) {
-    finalItemSpecifications.push({
+    itemData.push({
       id: parseInt(idInput.value) + itemCounter,
       sku: parseInt(skuInput.value) + itemCounter,
       naslov: naslovInput.value,
@@ -94,32 +89,11 @@ async function handleFileUpload() {
       imeSlike: image.name,
       kataloskiBroj: katBrInput.value,
     });
-    imageUrls.push(imagePath + image.name);
-    //await loadImages(image);
-    itemCounter++;
+
+    itemCounter += 2;
   }
 
   // Save data and redirect to itemPage.html
-  localStorage.setItem("imageUrls", JSON.stringify(imageUrls));
-  localStorage.setItem("itemData", JSON.stringify(finalItemSpecifications));
+  localStorage.setItem("itemData", JSON.stringify(itemData));
   window.location.href = "itemPage.html";
-}
-
-// Pomocne funckcije
-function loadImages(image) {
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      imageUrls.push(e.target.result);
-      /*
-      if (imageUrls.length == importImagesButton.files.length) {
-        localStorage.setItem("imageUrls", JSON.stringify(imageUrls));
-        localStorage.setItem("itemData", JSON.stringify(finalItemSpecifications));
-        window.location.href = "/itemPage.html";
-      }
-      */
-      resolve();
-    };
-    reader.readAsDataURL(image);
-  });
 }

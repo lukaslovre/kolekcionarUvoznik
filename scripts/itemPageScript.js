@@ -20,8 +20,7 @@ const opisInputs = document.querySelectorAll(".opisInput");
 
 // Event listeneri
 window.onbeforeunload = () => {
-  localStorage.setItem("imageUrls", JSON.stringify(imageUrls));
-  localStorage.setItem("itemData", JSON.stringify(finalItemSpecifications));
+  localStorage.setItem("itemData", JSON.stringify(itemData));
   return true;
 };
 showHistoryButton.addEventListener("click", goToHistoryPage);
@@ -51,9 +50,10 @@ opisInputs.forEach((opisInput) => {
 });
 
 // Globalne varijable
-const finalItemSpecifications = JSON.parse(localStorage.getItem("itemData")); // finalni podaci o itemima
-const imageUrls = JSON.parse(localStorage.getItem("imageUrls")); //lista slika (podatci o slikama, ne samo url)
+const imagePath = "slikeProizvoda/";
+const itemData = JSON.parse(localStorage.getItem("itemData")); // finalni podaci o itemima
 let currentItemIndex = 0; // apsolutni index, zapravo pokazatelj na kojoj stranici (visekratnik 3)
+
 renderCardsFrom(currentItemIndex);
 
 /* Funkcije */
@@ -62,7 +62,7 @@ function goToHistoryPage() {
 }
 function loadNextPage() {
   updateItemSpecification(lastInput);
-  if (currentItemIndex + 3 >= imageUrls.length) return;
+  if (currentItemIndex + 3 >= itemData.length) return;
   currentItemIndex += 3;
   renderCardsFrom(currentItemIndex);
 }
@@ -74,18 +74,19 @@ function loadPreviousPage() {
 }
 function renderCardsFrom(startIndex) {
   // Update navigation item number
-  const endIndex = Math.min(startIndex + 3, imageUrls.length);
+  const endIndex = Math.min(startIndex + 3, itemData.length);
   navigationItemNumber.textContent = `${startIndex + 1}-${endIndex} of ${
-    imageUrls.length
+    itemData.length
   }`;
 
   // Update images
   cards.forEach((card, index) => {
-    const imageIndex = startIndex + index;
-    if (imageUrls[imageIndex]) {
+    const itemIndex = startIndex + index;
+
+    if (itemData[itemIndex]) {
       card.style.visibility = "visible";
-      const item = finalItemSpecifications[imageIndex];
-      card.querySelector(".slikaProizvoda").src = imageUrls[imageIndex];
+      const item = itemData[itemIndex];
+      card.querySelector(".slikaProizvoda").src = imagePath + item.imeSlike;
       skuInputs[index].value = item.sku;
       idInputs[index].value = item.id;
       kataloskiBrojInputs[index].value = item.kataloskiBroj;
@@ -105,8 +106,8 @@ function updateItemSpecification(inputNode) {
   const relativeCardIndex = card.id.slice(-1) - 1; // 0, 1 ili 2
   const absoluteCardIndex = currentItemIndex + Number(relativeCardIndex);
 
-  if (finalItemSpecifications[absoluteCardIndex]) {
-    const item = finalItemSpecifications[absoluteCardIndex];
+  if (itemData[absoluteCardIndex]) {
+    const item = itemData[absoluteCardIndex];
     item.sku = skuInputs[relativeCardIndex].value;
     item.id = idInputs[relativeCardIndex].value;
     item.kataloskiBroj = kataloskiBrojInputs[relativeCardIndex].value;
@@ -228,7 +229,7 @@ function formatAndMakeToFile() {
   const godina = now.getFullYear().toString();
   const photoNamePrefix = `https://kolekcionar.hr/wp-content/uploads/${godina}/${mjesec}/`;
 
-  for (const item of finalItemSpecifications) {
+  for (const item of itemData) {
     csvValues[0] = item.id; //item.id
     csvValues[2] = item.sku;
     csvValues[3] = item.naslov;
@@ -252,7 +253,7 @@ function formatAndMakeToFile() {
   }
   csvFile += '"';
 
-  console.log(finalItemSpecifications);
+  console.log(itemData);
   console.log(csvFile);
 
   // saving to file
@@ -308,10 +309,13 @@ function adjustHeight(e) {
 }
 function addCategoryToBeginningOfTitle(e) {
   const naslovInput = e.target.closest(".cardTextFields").querySelector(".naslovInput");
-  const lastCategoryText = e.target.value.split("/").slice(-1).toString().trim();
+  const categoryInput = e.target;
+  const lastCategoryText = categoryInput.value.split("/").slice(-1).toString().trim();
 
   if (lastCategoryText.length == 0) return;
-  naslovInput.value = lastCategoryText + " " + naslovInput.value;
+  if (naslovInput.value.length != 0) return;
+
+  naslovInput.value = lastCategoryText + " ";
 }
 function copyPreviousValueToInput(e) {
   // keyCode 13 = 'enter'
@@ -324,6 +328,6 @@ function copyPreviousValueToInput(e) {
     if (absoluteCardIndex == 0) return;
 
     const fieldType = e.target.className.slice(0, -5);
-    e.target.value = finalItemSpecifications[absoluteCardIndex - 1][fieldType];
+    e.target.value = itemData[absoluteCardIndex - 1][fieldType];
   }
 }

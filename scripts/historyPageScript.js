@@ -1,21 +1,21 @@
 // HTML elementi
 const showHistoryButton = document.getElementById("showHistoryButton");
-const savedImportsContainer = document.getElementById("savedImportsContainer");
-const currentImportsDataContainer = document.querySelector(
-  "#currentImportContainer .itemData"
-);
 
+const currentImportsContainer = document.getElementById("currentImportContainer");
+const currentImportsDataContainer = currentImportsContainer.querySelector(".itemData");
 const saveCurrentImportButton = document.getElementById("saveCurrentImportButton");
 const editCurrentImportButton = document.getElementById("editCurrentImportButton");
-let deleteButtons; // mora se ucitati nakon sto se rendera u JS
-let editButtons; // ista
+
+const savedImportsContainer = document.getElementById("savedImportsContainer");
+let deleteButtons; // Mora se ucitati nakon sto se rendera u JS
+let editButtons; // Mora se ucitati nakon sto se rendera u JS
 
 const importItemTemplate = document.getElementById("importItemTemplate");
 
 // Event listeneri
+showHistoryButton.addEventListener("click", goToItemPage);
 saveCurrentImportButton.addEventListener("click", saveCurrentImport);
 editCurrentImportButton.addEventListener("click", goToItemPage);
-showHistoryButton.addEventListener("click", goToItemPage);
 
 // Globalne varijable
 const itemData = JSON.parse(localStorage.getItem("itemData")); // finalni podaci o itemima
@@ -35,14 +35,19 @@ function saveCurrentImport() {
 }
 function deleteSavedImport(e) {
   const clickedIcon = e.target;
-  const itemIndex = clickedIcon.closest(".importItem").querySelector(".itemData")
-    .dataset.index;
+  const clickedItem = clickedIcon.closest(".importItem");
+  const itemIndex = clickedItem.querySelector(".itemData").dataset.index;
   console.log(itemIndex);
-  savedImports.splice(itemIndex, 1);
 
-  clearSavedImports();
-  renderSavedImports();
-  localStorage.setItem("savedImports", JSON.stringify(savedImports));
+  clickedItem.style.animation = "fade-out 250ms linear";
+  clickedItem.addEventListener("animationend", () => {
+    // Obriši item iz liste savedImporta i spremi novu listu u localStorage
+    savedImports.splice(itemIndex, 1);
+    localStorage.setItem("savedImports", JSON.stringify(savedImports));
+
+    clearSavedImports();
+    renderSavedImports();
+  });
 }
 function editSavedImport(e) {
   const clickedIcon = e.target;
