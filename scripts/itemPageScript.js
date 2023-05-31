@@ -44,6 +44,7 @@ cijenaInputs.forEach((cijenaInput) => {
 });
 kategorijaInputs.forEach((kategorijaInput) => {
   kategorijaInput.addEventListener("focusout", addCategoryToBeginningOfTitle);
+  kategorijaInput.addEventListener("input", isValidCategory);
 });
 opisInputs.forEach((opisInput) => {
   opisInput.addEventListener("input", adjustHeight);
@@ -52,6 +53,8 @@ opisInputs.forEach((opisInput) => {
 // Globalne varijable
 const imagePath = "slikeProizvoda/";
 const itemData = JSON.parse(localStorage.getItem("itemData")); // finalni podaci o itemima
+let allPosibleCategories;
+getCategories();
 let currentItemIndex = 0; // apsolutni index, zapravo pokazatelj na kojoj stranici (visekratnik 3)
 
 renderCardsFrom(currentItemIndex);
@@ -317,6 +320,19 @@ function addCategoryToBeginningOfTitle(e) {
 
   naslovInput.value = lastCategoryText + " ";
 }
+function isValidCategory(e) {
+  if (!allPosibleCategories) return;
+
+  const categoryInput = e.target.value.replaceAll("/", ">");
+  const categoryIcon = e.target.nextElementSibling;
+  console.log(categoryIcon);
+
+  if (allPosibleCategories.includes(categoryInput)) {
+    categoryIcon.src = "images/checkmark.svg";
+  } else {
+    categoryIcon.src = "images/x.svg";
+  }
+}
 function copyPreviousValueToInput(e) {
   // keyCode 13 = 'enter'
   if (e.keyCode == 13 && e.shiftKey == false) {
@@ -330,4 +346,8 @@ function copyPreviousValueToInput(e) {
     const fieldType = e.target.className.slice(0, -5);
     e.target.value = itemData[absoluteCardIndex - 1][fieldType];
   }
+}
+async function getCategories() {
+  const res = await fetch("kategorije.json");
+  allPosibleCategories = await res.json();
 }
