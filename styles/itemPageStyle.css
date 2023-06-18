@@ -80,12 +80,57 @@ button {
 #cardsContainer > .selectedCard {
   opacity: 1;
 }
-#cardsContainer > .card > .slikaProizvoda {
+#cardsContainer > .card > .slikaProizvodaContainer {
+  position: relative;
+}
+#cardsContainer > .card > .slikaProizvodaContainer > img {
   width: 100%;
   height: 25vh;
   object-fit: cover;
   border-radius: 0.5rem;
 }
+#cardsContainer > .card > .slikaProizvodaContainer > .slikaProizvodaControls {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#cardsContainer
+  > .card
+  > .slikaProizvodaContainer
+  > .slikaProizvodaControls
+  .centerSlikaControlContainer {
+  display: flex;
+  gap: 0.5rem;
+}
+#cardsContainer
+  > .card
+  > .slikaProizvodaContainer
+  > .slikaProizvodaControls
+  img:not(.imageIcon) {
+  cursor: pointer;
+  padding: 0.25rem;
+  background-color: rgba(20, 27, 31, 0.85);
+  border-radius: 0.25rem;
+}
+#cardsContainer
+  > .card
+  > .slikaProizvodaContainer
+  > .slikaProizvodaControls
+  .imageCounterDiv {
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  background-color: rgba(20, 27, 31, 0.85);
+  border-radius: 0.25rem;
+
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+}
+
 /* id, sku i katBr inputi */
 #cardsContainer > .card .threeIDsInputsContainer {
   display: flex;

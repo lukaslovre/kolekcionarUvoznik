@@ -8,6 +8,13 @@ const navigationRightButton = document.getElementById("navigationRightButton");
 
 const cardsContainer = document.getElementById("cardsContainer");
 const cards = document.querySelectorAll(".card");
+
+const joinFromLeftIcons = document.querySelectorAll(".joinFromLeftIcon");
+const joinFromRightIcons = document.querySelectorAll(".joinFromRightIcon");
+const showPrevImageIcons = document.querySelectorAll(".showPrevImageIcon");
+const showNextImageIcons = document.querySelectorAll(".showNextImageIcon");
+const imageCounters = document.querySelectorAll(".imageCounter");
+
 const allInputs = cardsContainer.querySelectorAll("input, textarea");
 const lastInput = allInputs[allInputs.length - 1];
 const skuInputs = document.querySelectorAll(".skuInput");
@@ -28,6 +35,19 @@ saveAsButton.addEventListener("click", formatAndMakeToFile);
 navigationLeftButton.addEventListener("click", loadPreviousPage);
 navigationRightButton.addEventListener("click", loadNextPage);
 
+joinFromLeftIcons.forEach((joinFromLeftIcon) => {
+  joinFromLeftIcon.addEventListener("click", joinImageFromLeft);
+});
+joinFromRightIcons.forEach((joinFromRightIcon) => {
+  joinFromRightIcon.addEventListener("click", joinImageFromRight);
+});
+showPrevImageIcons.forEach((showPrevImageIcon) => {
+  showPrevImageIcon.addEventListener("click", showPrevImage);
+});
+showNextImageIcons.forEach((showNextImageIcon) => {
+  showNextImageIcon.addEventListener("click", showNextImage);
+});
+
 lastInput.addEventListener("keydown", loadNextPageIfTab);
 allInputs.forEach((input) => {
   input.addEventListener("focus", markCardAsSelected);
@@ -36,7 +56,7 @@ allInputs.forEach((input) => {
   });
   input.addEventListener("keydown", copyPreviousValueToInput); //na "enter"
 });
-lastInput.removeEventListener("change", (e) => {
+lastInput.removeEventListener("focusout", (e) => {
   updateItemSpecification(e.target);
 });
 cijenaInputs.forEach((cijenaInput) => {
@@ -63,6 +83,71 @@ renderCardsFrom(currentItemIndex);
 function goToHistoryPage() {
   window.location.href = "historyPage.html";
 }
+function joinImageFromLeft(e) {
+  const card = e.target.closest(".card");
+  const relativeCardIndex = Number(card.id.slice(-1)) - 1; // 0, 1 ili 2
+  const absoluteCardIndex = currentItemIndex + relativeCardIndex;
+
+  if (absoluteCardIndex == 0) return;
+
+  // Add image to item images
+  const previousImage = itemData[absoluteCardIndex - 1].imeSlike;
+  itemData[absoluteCardIndex].imeSlike.push(...previousImage);
+
+  // Delete the joined item
+  itemData.splice(absoluteCardIndex - 1, 1);
+
+  // Re-render html
+  renderCardsFrom(currentItemIndex);
+}
+function joinImageFromRight(e) {
+  const card = e.target.closest(".card");
+  const relativeCardIndex = Number(card.id.slice(-1)) - 1; // 0, 1 ili 2
+  const absoluteCardIndex = currentItemIndex + relativeCardIndex;
+
+  if (absoluteCardIndex == itemData.length - 1) return;
+
+  // Add image to item images
+  const nextImage = itemData[absoluteCardIndex + 1].imeSlike;
+  itemData[absoluteCardIndex].imeSlike.push(...nextImage);
+
+  // Delete the joined item
+  itemData.splice(absoluteCardIndex + 1, 1);
+
+  // Re-render html
+  renderCardsFrom(currentItemIndex);
+}
+function showPrevImage(e) {
+  const card = e.target.closest(".card");
+  const relativeCardIndex = Number(card.id.slice(-1)) - 1; // 0, 1 ili 2
+  const absoluteCardIndex = currentItemIndex + relativeCardIndex;
+  const imageCounter = e.target.parentNode.querySelector(".imageCounter");
+
+  const currentImageIndex = parseInt(imageCounter.textContent.split("/")[0]) - 1;
+  const maxImageIndex = parseInt(imageCounter.textContent.split("/")[1]);
+
+  if (currentImageIndex < 1) return;
+
+  card.querySelector(".slikaProizvoda").src =
+    imagePath + itemData[absoluteCardIndex].imeSlike[currentImageIndex - 1];
+  imageCounter.textContent = currentImageIndex + "/" + maxImageIndex;
+}
+function showNextImage(e) {
+  const card = e.target.closest(".card");
+  const relativeCardIndex = Number(card.id.slice(-1)) - 1; // 0, 1 ili 2
+  const absoluteCardIndex = currentItemIndex + relativeCardIndex;
+  const imageCounter = e.target.parentNode.querySelector(".imageCounter");
+
+  const currentImageIndex = parseInt(imageCounter.textContent.split("/")[0]) + 1;
+  const maxImageIndex = parseInt(imageCounter.textContent.split("/")[1]);
+
+  if (currentImageIndex > maxImageIndex) return;
+
+  card.querySelector(".slikaProizvoda").src =
+    imagePath + itemData[absoluteCardIndex].imeSlike[currentImageIndex - 1];
+  imageCounter.textContent = currentImageIndex + "/" + maxImageIndex;
+}
+
 function loadNextPage() {
   updateItemSpecification(lastInput);
   if (currentItemIndex + 3 >= itemData.length) return;
@@ -89,7 +174,8 @@ function renderCardsFrom(startIndex) {
     if (itemData[itemIndex]) {
       card.style.visibility = "visible";
       const item = itemData[itemIndex];
-      card.querySelector(".slikaProizvoda").src = imagePath + item.imeSlike;
+      card.querySelector(".slikaProizvoda").src = imagePath + item.imeSlike[0];
+      imageCounters[index].textContent = "1/" + item.imeSlike.length;
       skuInputs[index].value = item.sku;
       idInputs[index].value = item.id;
       kataloskiBrojInputs[index].value = item.kataloskiBroj;
@@ -239,7 +325,9 @@ function formatAndMakeToFile() {
     csvValues[8] = item.opis.replaceAll("\n", "\\n"); // možda ne treba ovo, pogledati kako ivanov interpretira
     csvValues[25] = item.cijena;
     csvValues[26] = item.kategorija.replaceAll("/", ">");
-    csvValues[29] = photoNamePrefix + item.imeSlike;
+    csvValues[29] = item.imeSlike
+      .map((imeslike) => photoNamePrefix + imeslike)
+      .join(", ");
     if (item.kataloskiBroj == "N/A" || item.kataloskiBroj == "") {
       csvValues[39] = "";
       csvValues[40] = "";

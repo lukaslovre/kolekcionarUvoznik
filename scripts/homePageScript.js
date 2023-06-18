@@ -86,7 +86,7 @@ function handleFileUpload() {
       cijena: cijenaInput.value,
       kategorija: kategorijaInput.value,
       opis: opisInput.value,
-      imeSlike: image.name,
+      imeSlike: [image.name],
       kataloskiBroj: katBrInput.value,
     });
 
