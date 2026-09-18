@@ -109,15 +109,43 @@
           </div>
         </div>
 
-        <label id="mode-submit-button">
-          Uvoz
-          <input
-            type="file"
-            id="import-images-button"
-            style="position: fixed; top: -100%"
-            multiple
-          />
-        </label>
+        <div id="import-actions">
+          <label id="mode-submit-button" class="import-button">
+            Uvoz slika
+            <input
+              type="file"
+              id="import-images-button"
+              style="position: fixed; top: -100%"
+              accept="image/*"
+              multiple
+            />
+          </label>
+
+          <label class="import-button secondary-import-button">
+            Uvoz CSV-a
+            <input
+              type="file"
+              id="import-csv-button"
+              style="position: fixed; top: -100%"
+              accept=".csv,text/csv"
+            />
+          </label>
+        </div>
+
+        <section id="csv-import-preview" hidden>
+          <h2>Pregled CSV uvoza</h2>
+          <p id="csv-import-summary"></p>
+          <p id="csv-import-ignored"></p>
+          <ul id="csv-import-warnings"></ul>
+          <p class="csv-preview-title">Prva dva proizvoda:</p>
+          <pre id="csv-import-sample"></pre>
+          <div class="csv-preview-actions">
+            <button type="button" id="confirm-csv-import">
+              Učitaj i zamijeni trenutni uvoz
+            </button>
+            <button type="button" id="cancel-csv-import">Odustani</button>
+          </div>
+        </section>
       </div>
     </div>
   </body>

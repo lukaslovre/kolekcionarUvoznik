@@ -129,7 +129,7 @@ function showPrevImage(e) {
   if (currentImageIndex < 1) return;
 
   card.querySelector(".slikaProizvoda").src =
-    imagePath + itemData[absoluteCardIndex].imeSlike[currentImageIndex - 1];
+    getImageSource(itemData[absoluteCardIndex].imeSlike[currentImageIndex - 1]);
   imageCounter.textContent = currentImageIndex + "/" + maxImageIndex;
 }
 function showNextImage(e) {
@@ -144,7 +144,7 @@ function showNextImage(e) {
   if (currentImageIndex > maxImageIndex) return;
 
   card.querySelector(".slikaProizvoda").src =
-    imagePath + itemData[absoluteCardIndex].imeSlike[currentImageIndex - 1];
+    getImageSource(itemData[absoluteCardIndex].imeSlike[currentImageIndex - 1]);
   imageCounter.textContent = currentImageIndex + "/" + maxImageIndex;
 }
 
@@ -174,8 +174,13 @@ function renderCardsFrom(startIndex) {
     if (itemData[itemIndex]) {
       card.style.visibility = "visible";
       const item = itemData[itemIndex];
-      card.querySelector(".slikaProizvoda").src = imagePath + item.imeSlike[0];
-      imageCounters[index].textContent = "1/" + item.imeSlike.length;
+      const itemImages = Array.isArray(item.imeSlike) ? item.imeSlike : [];
+      card.querySelector(".slikaProizvoda").src = itemImages[0]
+        ? getImageSource(itemImages[0])
+        : "";
+      imageCounters[index].textContent = itemImages.length
+        ? "1/" + itemImages.length
+        : "0/0";
       skuInputs[index].value = item.sku;
       idInputs[index].value = item.id;
       kataloskiBrojInputs[index].value = item.kataloskiBroj;
@@ -326,7 +331,9 @@ function formatAndMakeToFile() {
     csvValues[25] = item.cijena;
     csvValues[26] = item.kategorija.replaceAll("/", ">");
     csvValues[29] = item.imeSlike
-      .map((imeslike) => photoNamePrefix + imeslike)
+      .map((imeslike) =>
+        isAbsoluteImageUrl(imeslike) ? imeslike : photoNamePrefix + imeslike
+      )
       .join(", ");
     if (item.kataloskiBroj == "N/A" || item.kataloskiBroj == "") {
       csvValues[39] = "";
@@ -371,6 +378,14 @@ function saveCSV(fileName, csvFile) {
       document.body.removeChild(link);
     }
   }
+}
+
+function isAbsoluteImageUrl(imageName) {
+  return /^https?:\/\//i.test(imageName);
+}
+
+function getImageSource(imageName) {
+  return isAbsoluteImageUrl(imageName) ? imageName : imagePath + imageName;
 }
 
 // helper functions
